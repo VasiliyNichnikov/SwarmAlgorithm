@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwarmAlgorithm", "SwarmAlgorithm\SwarmAlgorithm.csproj", "{335EC9B0-5CF2-423C-98C8-3D20172EC47A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwarmForms", "SwarmForms\SwarmForms.csproj", "{1330CE85-EBF5-4D07-925F-59E17CF67DCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwarmConsole", "SwarmConsole\SwarmConsole.csproj", "{02D5D563-35BF-475C-8A82-173D5824D770}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{335EC9B0-5CF2-423C-98C8-3D20172EC47A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{335EC9B0-5CF2-423C-98C8-3D20172EC47A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{335EC9B0-5CF2-423C-98C8-3D20172EC47A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1330CE85-EBF5-4D07-925F-59E17CF67DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1330CE85-EBF5-4D07-925F-59E17CF67DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1330CE85-EBF5-4D07-925F-59E17CF67DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1330CE85-EBF5-4D07-925F-59E17CF67DCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D5D563-35BF-475C-8A82-173D5824D770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D5D563-35BF-475C-8A82-173D5824D770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D5D563-35BF-475C-8A82-173D5824D770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D5D563-35BF-475C-8A82-173D5824D770}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

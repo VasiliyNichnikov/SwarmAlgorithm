@@ -26,6 +26,11 @@ namespace SwarmAlgorithm.Utils
             Y = y;
         }
 
+        public float SumOfElements()
+        {
+            return X + Y;
+        }
+
         public static Vector2 operator +(Vector2 first, Vector2 second)
         {
             return new Vector2(first.X + second.X, first.Y + second.Y);
@@ -51,14 +56,14 @@ namespace SwarmAlgorithm.Utils
             return new Vector2(second.X * first, second.Y * first);
         }
 
-        public static Vector2 operator *(Vector2 first, float[] second)
+        public static Vector2 operator -(Vector2 first)
         {
-            if (second.Length != 2)
-            {
-                throw new Exception(); // todo нужно отфильтровать ошибку
-            }
+            return new Vector2(-first.X, -first.Y);
+        }
 
-            return first * new Vector2(second[0], second[1]);
+        public override string ToString()
+        {
+            return $"Vector2({X}, {Y})";
         }
     }
 }

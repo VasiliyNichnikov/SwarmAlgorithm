@@ -1,61 +1,77 @@
 using System;
-using System.Linq;
 using SwarmAlgorithm.Utils;
 
 namespace SwarmAlgorithm
 {
+    // todo 1) Значения скоростей выходят за края (Нужно ограничить от 0 до 1)
+    // todo 2) Значение позиций выходят за края карты, нужно ограничить от minValues до maxValues
     public class Particle
     {
-        private Vector2 _localBestSolution;
+        private Vector2 _localBestSolutionPosition;
+        private float _localBestSolutionFunc;
         
         private Vector2 _position;
         private Vector2 _velocity;
-        private ISwarm _swarm;
+        private readonly ISwarm _swarm;
 
         public Particle(ISwarm swarm)
         {
+            _swarm = swarm;
             _position = InitStartPosition(swarm);
-            _velocity = Vector2.RandomFromZeroToOne;
-            _localBestSolution = Vector2.Zero;
+            _velocity = InitStartVelocity(swarm);
+
+            Console.WriteLine($"Start position: {_position}");
+            Console.WriteLine($"Start velocity: {_velocity}");
+            
+            _localBestSolutionPosition = Vector2.Zero;
+            _localBestSolutionFunc = _swarm.GetFunc(_position);
         }
 
         private Vector2 InitStartPosition(ISwarm swarm)
         {
-            var different = swarm.MaxValues.Except(swarm.MinValues).ToArray();
-            var added = different.Concat(swarm.MinValues).ToArray();
+            var different = swarm.MaxValues - swarm.MinValues;
+            var added = different + swarm.MinValues;
             return Vector2.RandomFromZeroToOne * added; 
         }
 
         private Vector2 InitStartVelocity(ISwarm swarm)
         {
-            float[] minValues = swarm.MaxValues.Except(swarm.MinValues).ToArray();
-            float[] maxValues = new float[minValues.Length];
-            Array.Copy(minValues, maxValues, minValues.Length);
-            
-            for (int i = 0; i < minValues.Length; i++)
-            {
-                minValues[i] = -minValues[i];
-            }
+            var minValues = swarm.MaxValues - swarm.MinValues;
+            var maxValues = minValues;
 
-            var different = maxValues.Except(minValues).ToArray();
-            var added = different.Concat(minValues).ToArray();
+            minValues = -minValues;
+            
+            var different = maxValues - minValues;
+            var added = different + minValues;
             
             return Vector2.RandomFromZeroToOne * added;
         }
 
-        public void Correction()
+        /// <summary>
+        /// Корректируется на основе обновленного лучшего решения
+        /// </summary>
+        /// <returns></returns>
+        public Vector2 Correction()
         {
-            var weightRatioP = 0.0f; // todo эти значения нужно булет задавать ручками)
-            var weightRatioG = 0.0f; // todo эти значения нужно булет задавать ручками)
-            var r1 = RandomWrap.NextFloat(); // todo нужно убедиться что число от нуля до единицы
-            var r2 = RandomWrap.NextFloat(); // todo нужно убедиться что число от нуля до единицы
-
-            var newVelocity = _velocity + weightRatioP * r1 * (_localBestSolution - _position) + 
-                              weightRatioG * r2 * (_swarm.GlobalBestSolution - _position);
+            // Случайный вектор для коррекции скорости с учетом лучшей позиции данной частицы
+            var r1 = Vector2.RandomFromZeroToOne;
+            // Случайный вектор для коррекции скорости с учетом лучшей глобальной позиции всех частиц
+            var r2 = Vector2.RandomFromZeroToOne;
+            
+            var newVelocity = _velocity + _swarm.WeightRatioP * r1 * (_localBestSolutionPosition - _position) + 
+                              _swarm.WeightRatioG * r2 * (_swarm.GlobalBestSolutionPosition - _position);
             var newPosition = _position + newVelocity;
 
             _velocity = newVelocity;
             _position = newPosition;
+
+            var solutionFunc = _swarm.GetFunc(_position);
+            if (solutionFunc < _localBestSolutionFunc)
+            {
+                _localBestSolutionFunc = solutionFunc;
+                _localBestSolutionPosition = _position;
+            }
+            return _position;
         }
     }
 }
