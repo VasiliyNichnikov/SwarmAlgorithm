@@ -61,9 +61,32 @@ namespace SwarmAlgorithm.Utils
             return new Vector2(-first.X, -first.Y);
         }
 
+        public static bool operator <(Vector2 first, Vector2 second)
+        {
+            return first.X < second.X || first.Y < second.Y;
+        }
+
+        public static bool operator >(Vector2 first, Vector2 second)
+        {
+            return first.X > second.X || first.Y > second.Y;
+        }
+
+        public static float Distance(Vector2 a, Vector2 b)
+        {
+            float x2 = (float)Math.Pow(a.X - b.X, 2);
+            float y2 = (float)Math.Pow(a.Y - b.Y, 2);
+            return (float)Math.Sqrt(x2 + y2);
+        }
+
+        public static Vector2 Abs(Vector2 value)
+        {
+            return new Vector2(Math.Abs(value.X), Math.Abs(value.Y));
+        }
+
         public override string ToString()
         {
-            return $"Vector2({X}, {Y})";
+            return $"{X}, {Y}";
+            // return $"Vector2({X}, {Y})";
         }
     }
 }

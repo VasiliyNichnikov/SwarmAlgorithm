@@ -1,4 +1,5 @@
-﻿using SwarmAlgorithm.Utils;
+﻿using System;
+using SwarmAlgorithm.Utils;
 
 namespace SwarmAlgorithm
 {
@@ -28,7 +29,7 @@ namespace SwarmAlgorithm
             WeightRatioP = weightRatioP;
             WeightRatioG = weightRatioG;
             
-            GlobalBestSolutionFunc = 0.0f;
+            GlobalBestSolutionFunc = 200.0f;
             GlobalBestSolutionPosition = Vector2.Zero;
 
             InitSwarm();
@@ -49,12 +50,17 @@ namespace SwarmAlgorithm
         /// <summary>
         /// Следующая итерация в поисках лучшего решения
         /// </summary>
-        public void NextIteration()
+        public void NextIteration(bool show=false)
         {
             foreach (var particle in _particles)
             {
                 var updatedPosition = particle.Correction();
                 var solutionFunc = GetFunc(updatedPosition);
+
+                if (show)
+                {
+                    Console.WriteLine(updatedPosition);
+                }
                 
                 // Если нашли решение лучше
                 if (solutionFunc < GlobalBestSolutionFunc)
@@ -67,7 +73,25 @@ namespace SwarmAlgorithm
         
         public float GetFunc(Vector2 position)
         {
-            return (position * position).SumOfElements();
+            var penalty = GetPenalty(position, 10000.0f); 
+            return (position * position).SumOfElements() + penalty;
+        }
+
+        private float GetPenalty(Vector2 position, float ratio)
+        {
+            var penalty1 = .0f;
+            if (position < MinValues)
+            {
+                penalty1 = (ratio * Vector2.Abs(position - MinValues)).SumOfElements();
+            }
+
+            var penalty2 = .0f;
+            if (position > MaxValues)
+            {
+                penalty2 = (ratio * Vector2.Abs(position - MaxValues)).SumOfElements();
+            }
+
+            return penalty1 + penalty2;
         }
     }
 }

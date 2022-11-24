@@ -1,10 +1,7 @@
-using System;
 using SwarmAlgorithm.Utils;
 
 namespace SwarmAlgorithm
 {
-    // todo 1) Значения скоростей выходят за края (Нужно ограничить от 0 до 1)
-    // todo 2) Значение позиций выходят за края карты, нужно ограничить от minValues до maxValues
     public class Particle
     {
         private Vector2 _localBestSolutionPosition;
@@ -20,9 +17,6 @@ namespace SwarmAlgorithm
             _position = InitStartPosition(swarm);
             _velocity = InitStartVelocity(swarm);
 
-            Console.WriteLine($"Start position: {_position}");
-            Console.WriteLine($"Start velocity: {_velocity}");
-            
             _localBestSolutionPosition = Vector2.Zero;
             _localBestSolutionFunc = _swarm.GetFunc(_position);
         }
