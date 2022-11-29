@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SwarmAlgorithm.Utils;
 
 namespace SwarmAlgorithm
@@ -53,7 +54,7 @@ namespace SwarmAlgorithm
         /// <summary>
         /// Следующая итерация в поисках лучшего решения
         /// </summary>
-        public void NextIteration()
+        public void NextIteration(ref List<float> bestSolutions)
         {
             foreach (var particle in _particles)
             {
@@ -65,6 +66,8 @@ namespace SwarmAlgorithm
                 {
                     GlobalBestSolutionFunc = solutionFunc;
                     GlobalBestSolutionPosition = updatedPosition;
+
+                    bestSolutions.Add(solutionFunc);
                 }
             }
         }
