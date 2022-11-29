@@ -4,11 +4,11 @@ namespace SwarmAlgorithm
 {
     public class Particle
     {
-        private Vector2 _localBestSolutionPosition;
+        private float[] _localBestSolutionPosition;
         private float _localBestSolutionFunc;
-        
-        private Vector2 _position;
-        private Vector2 _velocity;
+
+        private float[] _position;
+        private float[] _velocity;
         private readonly ISwarm _swarm;
 
         public Particle(ISwarm swarm)
@@ -17,44 +17,50 @@ namespace SwarmAlgorithm
             _position = InitStartPosition(swarm);
             _velocity = InitStartVelocity(swarm);
 
-            _localBestSolutionPosition = Vector2.Zero;
+            _localBestSolutionPosition = _position;
             _localBestSolutionFunc = _swarm.GetFunc(_position);
         }
 
-        private Vector2 InitStartPosition(ISwarm swarm)
+        private float[] InitStartPosition(ISwarm swarm)
         {
-            var different = swarm.MaxValues - swarm.MinValues;
-            var added = different + swarm.MinValues;
-            return Vector2.RandomFromZeroToOne * added; 
+            var different = swarm.MaxValues.DifferenceOfElements(swarm.MinValues);
+            var added = different.AdditionalOfElements(swarm.MinValues);
+            return FloatArrayExtensions.RandomFromZeroToOne(_swarm.Dimension).MultiplicationOfElements(added);
         }
 
-        private Vector2 InitStartVelocity(ISwarm swarm)
+        private float[] InitStartVelocity(ISwarm swarm)
         {
-            var minValues = swarm.MaxValues - swarm.MinValues;
+            var minValues = swarm.MaxValues.DifferenceOfElements(swarm.MinValues);
             var maxValues = minValues;
 
-            minValues = -minValues;
-            
-            var different = maxValues - minValues;
-            var added = different + minValues;
-            
-            return Vector2.RandomFromZeroToOne * added;
+            minValues = minValues.InvertElements();
+
+            var different = maxValues.DifferenceOfElements(minValues);
+            var added = different.AdditionalOfElements(minValues);
+
+            return FloatArrayExtensions.RandomFromZeroToOne(_swarm.Dimension).MultiplicationOfElements(added);
         }
 
         /// <summary>
         /// Корректируется на основе обновленного лучшего решения
         /// </summary>
         /// <returns></returns>
-        public Vector2 Correction()
+        public float[] Correction()
         {
             // Случайный вектор для коррекции скорости с учетом лучшей позиции данной частицы
-            var r1 = Vector2.RandomFromZeroToOne;
-            // Случайный вектор для коррекции скорости с учетом лучшей глобальной позиции всех частиц
-            var r2 = Vector2.RandomFromZeroToOne;
+            var currentBestPosition = FloatArrayExtensions.RandomFromZeroToOne(_swarm.Dimension);
             
-            var newVelocity = _velocity + _swarm.WeightRatioP * r1 * (_localBestSolutionPosition - _position) + 
-                              _swarm.WeightRatioG * r2 * (_swarm.GlobalBestSolutionPosition - _position);
-            var newPosition = _position + newVelocity;
+            // Случайный вектор для коррекции скорости с учетом лучшей глобальной позиции всех частиц
+            var globalBestPosition = FloatArrayExtensions.RandomFromZeroToOne(_swarm.Dimension);
+
+            var newVelocityPart1 = _localBestSolutionPosition.DifferenceOfElements(_position)
+                .MultiplicationOfElements(currentBestPosition).MultiplicationByValue(_swarm.WeightRatioP);
+
+            var newVelocityPart2 = _swarm.GlobalBestSolutionPosition.DifferenceOfElements(_position)
+                .MultiplicationOfElements(globalBestPosition).MultiplicationByValue(_swarm.WeightRatioG);
+            
+            var newVelocity = _velocity.AdditionalOfElements(newVelocityPart1).AdditionalOfElements(newVelocityPart2);
+            var newPosition = _position.AdditionalOfElements(newVelocity);
 
             _velocity = newVelocity;
             _position = newPosition;
@@ -65,6 +71,7 @@ namespace SwarmAlgorithm
                 _localBestSolutionFunc = solutionFunc;
                 _localBestSolutionPosition = _position;
             }
+
             return _position;
         }
     }
